@@ -5,10 +5,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
+
+import com.example.administrator.notification.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -17,8 +22,27 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding activityMainBinding= DataBindingUtil.setContentView(this,R.layout.activity_main);
+        activityMainBinding.showToast.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showToast();
+            }
+        });
+        activityMainBinding.showNotification.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showNotification();
+            }
+        });
+    }
 
+    private void showNotification()
+    {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
             Notification.Builder builder = new Notification.Builder(this).setContentTitle("content title").setContentText("content text").setSmallIcon(R.mipmap.ic_launcher);
@@ -32,6 +56,16 @@ public class MainActivity extends AppCompatActivity
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(100, notification);
         }
+    }
+
+    private void showToast()
+    {
+        Toast toast=new Toast(this);
+        View view=getLayoutInflater().inflate(R.layout.remotelayout,null,false);
+        toast.setView(view);
+
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.show();
     }
 
     private PendingIntent getPendingIntent()
